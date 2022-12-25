@@ -1,63 +1,17 @@
 'use strict';
 
-// Initlalize variables & update DOM
-
+// Initialize variables
+let scoreDisplay;
+let flashMessageP1;
 let score = 0;
-let scoreDisplay = document.querySelector('#currentScore--player1');
-
-//TODO: Delete test data, just initialize as an empty array
-let allBuildings = [
-  {
-    score: 7,
-    color: 'red',
-    player: 1,
-    buildingID: 100,
-  },
-
-  {
-    score: 7,
-    color: 'neutral',
-    player: 1,
-    buildingID: 101,
-  },
-  {
-    score: 100,
-    color: 'red',
-    player: 2,
-    buildingID: 102,
-  },
-];
-
-let flashMessageP1 = document.querySelector('#flash-p1');
 
 // FUNCTIONS
 
-// Update the buildings list with the current array
+// Updates the buildings list with the current array
 function updateBuildings(playerNumber) {
   // Initialize an empty object to store the requested list of buildings
-  let list = {};
-
-  // Use a switch statement to determine list of which player to initiate
-  switch (playerNumber) {
-    case 1:
-      list = document.querySelector('#currentBuildings--p1');
-      break;
-    case 2:
-      list = document.querySelector('#currentBuildings--p2');
-      break;
-    case 3:
-      list = document.querySelector('#currentBuildings--p2');
-      break;
-    case 4:
-      list = document.querySelector('#currentBuildings--p4');
-      break;
-    case 5:
-      list = document.querySelector('#currentBuildings--p5');
-      break;
-    case 6:
-      list = document.querySelector('#currentBuildings--p6');
-      break;
-  }
+  // let list = document.querySelector('#currentBuildings--p1');
+  let list = document.querySelector(`#currentBuildings--p${playerNumber}`);
 
   // Empty all the HTMl inside this list (which is an <ul>)
   list.innerHTML = '';
@@ -81,8 +35,7 @@ function updateBuildings(playerNumber) {
   }
 }
 
-// Calculate the total score and update the front-end
-
+// Calculate the total score of the player and update the front-end
 function calculateTotal(playerNumber) {
   let total = 0;
 
@@ -95,7 +48,7 @@ function calculateTotal(playerNumber) {
   scoreDisplay.textContent = total;
 }
 
-// Get the currently checked radio button
+// Get the currently checked radio button from <input>
 function getCheckedRadioButton() {
   const elements = document.getElementsByName('building-color');
 
@@ -108,6 +61,7 @@ function getCheckedRadioButton() {
 const getBuildingValue = () =>
   Number(document.querySelector('#building-value').value);
 
+// Get the currently submitted player number from <input>
 function getCheckedPlayerNumber() {
   const elements = document.getElementsByName('player-number');
 
@@ -117,15 +71,67 @@ function getCheckedPlayerNumber() {
 }
 
 // MAIN PROJECT
+//TODO: Delete test data, just initialize as an empty array
+let allBuildings = [
+  {
+    score: 7,
+    color: 'red',
+    player: 1,
+    uniqueID: 100,
+  },
+
+  {
+    score: 7,
+    color: 'neutral',
+    player: 1,
+    uniqueID: 101,
+  },
+  {
+    score: 100,
+    color: 'red',
+    player: 2,
+    uniqueID: 102,
+  },
+];
 
 // Initialize score & buildings
 
+for (let i = 1; i <= 6; i++) {
+  let htmlContent = `
+  
+  <div class="playercard">
+  <h2 class="player" id="player--${i}">Player ${i}</h2>
+  
+  <div class="flash-message hidden" id="flash-p${i}"></div>
+  <p>
+  Current score: <span class="score" id="currentScore--player${i}"></span>
+  </p>
+  
+  <h3>Current buildings</h3>
+  
+  <ul id="currentBuildings--p${i}">
+  
+  </ul>
+  </div>
+  
+  `;
+
+  document
+    .querySelector('#scoreboard')
+    .insertAdjacentHTML('beforeend', htmlContent);
+
+  scoreDisplay = document.querySelector(`#currentScore--player${i}`);
+  flashMessageP1 = document.querySelector(`#flash-p${i}`);
+
+  updateBuildings(i);
+  calculateTotal(i);
+}
+
 //TODO: Use a for loop to update buildings for all players
-updateBuildings(1);
-calculateTotal(1);
+
+// TODO: Initiate the game with 6 players, creating all elements through JavaScript with a for loop
 
 // Add a building and display a flash message
-//TODO: Add a unique ID
 
 // Initialize the unique ID number, incrementing everytime a building is created
 let uniqueID = 1;
@@ -134,12 +140,14 @@ document.querySelector('#add-building').addEventListener('click', function () {
   // Get input fields
   const buildingColor = getCheckedRadioButton();
   const buildingValue = getBuildingValue();
+  const playerNumber = getCheckedPlayerNumber();
 
   // Construct object to add
   const newBuilding = {
     color: buildingColor,
     score: buildingValue,
     uniqueID: uniqueID,
+    player: playerNumber,
   };
 
   // Increment uniqueID to keep it unique
@@ -149,8 +157,8 @@ document.querySelector('#add-building').addEventListener('click', function () {
   allBuildings.push(newBuilding);
 
   // Update buildings list & total points
-  updateBuildings();
-  calculateTotal();
+  updateBuildings(playerNumber);
+  calculateTotal(playerNumber);
 
   // Flash a message on the screen
   flashMessageP1.textContent = `Added a ${buildingColor} building of score ${buildingValue}`;
@@ -163,7 +171,7 @@ document.querySelector('#add-building').addEventListener('click', function () {
   }, '5000');
 });
 
-// Delete a building
+// TODO: Delete a building
 // Select all delete buttons
 const deleteBtns = document.querySelectorAll('.delete-btn');
 // Loop over all buildings and add an event listener to the delete button

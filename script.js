@@ -243,8 +243,10 @@ function addDeleteButtons() {
         }
       }
 
-      updateBuildings(player);
-      deleteBtns = document.querySelectorAll('.delete-btn');
+      if (player != 0) {
+        updateBuildings(player);
+        deleteBtns = document.querySelectorAll('.delete-btn');
+      }
     });
   }
 }

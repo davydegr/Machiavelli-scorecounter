@@ -1,11 +1,96 @@
-root {
-  background-color: gray;
+:root {
+  --white: #fefffe;
+  --lightgray: #f3f5f6;
+  --dark: #210124;
+  --orange: #ee7b30;
+  --green: #7fb069;
+  --gray: #dce2e5;
+}
+
+body {
+  background-color: var(--lightgray);
+  height: 100vh;
+  width: 100vw;
+  color: var(--light);
+  padding: 3rem;
+}
+
+h1 {
+  padding: 1rem 0 3rem 0;
+  display: flex;
+  justify-content: center;
+}
+
+form {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  width: 90vw;
+  height: 90vh;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  background-color: var(--white);
+  margin: 0 0 3rem 0;
+}
+
+label {
+  display: flex;
+}
+
+input[type='number'] {
+  border-radius: 50px;
 }
 
 .hidden {
   display: none;
 }
 
-.playercard {
-  background-color: lightgray;
+.playercard,
+form {
+  background-color: var(--white);
+  padding: 1rem;
+  color: var(--dark);
+  border: 1px solid var(--gray);
+  border-radius: 5px;
+  box-shadow: 4px 4px 15px -7px rgba(77, 77, 77, 0.1);
+}
+
+.delete-btn {
+  font-size: 0.7rem;
+  color: red;
+  text-decoration: underline;
+}
+
+.delete-btn:hover {
+  cursor: pointer;
+}
+
+#scoreboard {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: 2rem;
+}
+
+.highscore {
+  border-color: var(--green);
+  border-width: 2px;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.close-modal {
+  position: absolute;
+  top: 1.2rem;
+  right: 2rem;
+  font-size: 5rem;
+  color: #333;
+  cursor: pointer;
+  border: none;
+  background: none;
 }

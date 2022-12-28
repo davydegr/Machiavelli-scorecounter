@@ -1,8 +1,11 @@
 'use strict';
 
+// Function "highlightHighscore" has to be initialized separately because otherwise it will try to highlight a highscore at the beginning of the game
+// Function "calculateTotal" is embedded into "updateBuildings" so should never be called separately
+
 // Initialize variables
 let scoreDisplay;
-let flashMessageP1;
+let flashmessage;
 let score = 0;
 
 // Initialize the unique ID number, incrementing everytime a building is created
@@ -21,8 +24,10 @@ function updateBuildings(playerNumber) {
   // Loop over [buildings] to create a list of all current buildings of the player
   for (let i = 0; i < allBuildings.length; i++) {
     if (allBuildings[i]['player'] == playerNumber) {
+      // Increment the total amount of buildings
+
       const htmlContent = `
-      <li>${allBuildings[i]['score']} - ${allBuildings[i]['color']}<span class="delete-btn"> - verwijderen</span><span class="building-id hidden">${allBuildings[i]['uniqueID']}</span></li>
+      <li>${allBuildings[i]['score']} - ${allBuildings[i]['color']} <span class="delete-btn">verwijderen</span><span class="building-id hidden">${allBuildings[i]['uniqueID']}</span></li>
       `;
 
       list.insertAdjacentHTML('beforeend', htmlContent);
@@ -42,6 +47,13 @@ function updateBuildings(playerNumber) {
     }
   }
 
+  if (list.innerHTML == '') {
+    const htmlContent = `
+    This player curretly has no buildings.`;
+
+    list.insertAdjacentHTML('beforeend', htmlContent);
+  }
+
   calculateTotal(playerNumber);
   addDeleteButtons();
 }
@@ -50,10 +62,13 @@ function updateBuildings(playerNumber) {
 function calculateTotal(playerNumber) {
   let total = 0;
   let colors = [];
+  let totalAmountBuildings = 0;
 
   // Loop over all the buildings and add the total to the score
   for (let i = 0; i < allBuildings.length; i++) {
     if (allBuildings[i]['player'] == playerNumber) {
+      totalAmountBuildings += 1;
+
       total += allBuildings[i]['score'];
 
       // Add the color to the colors array
@@ -61,6 +76,7 @@ function calculateTotal(playerNumber) {
     }
   }
 
+  // Check if user has all colors, add 3 points and a list element
   if (
     colors.indexOf('red') != -1 &&
     colors.indexOf('green') != -1 &&
@@ -69,6 +85,26 @@ function calculateTotal(playerNumber) {
     colors.indexOf('purple') != -1
   ) {
     total += 3;
+
+    let list = document.querySelector(`#currentBuildings--p${playerNumber}`);
+
+    const htmlContent = `
+    <li>✅ 3 extra points awarded for having all colors</li>
+    `;
+
+    list.insertAdjacentHTML('afterBegin', htmlContent);
+  }
+
+  if (totalAmountBuildings >= 8) {
+    total += 2;
+
+    let list = document.querySelector(`#currentBuildings--p${playerNumber}`);
+
+    const htmlContent = `
+    <li>✅ 2 extra points awarded for having 8 buildings or more</li>
+    `;
+
+    list.insertAdjacentHTML('afterBegin', htmlContent);
   }
 
   scoreDisplay = document.querySelector(`#currentScore--player${playerNumber}`);
@@ -95,6 +131,41 @@ function getCheckedPlayerNumber() {
 
   for (let i = 0; i < elements.length; i++) {
     if (elements[i].checked) return elements[i].value;
+  }
+}
+
+function highlightHighscore() {
+  let allHighscores = document.querySelectorAll('.score');
+  let highscore = 0;
+  let allPlayerCards = document.querySelectorAll('.playercard');
+
+  // Delete all highlight classes
+
+  for (let i = 0; i < allPlayerCards.length; i++) {
+    allPlayerCards[i].classList.remove('highscore');
+  }
+
+  // Loop over all the highscores and find the highest score
+
+  for (let i = 0; i < allHighscores.length; i++) {
+    let playerScore = Number(allHighscores[i].innerHTML);
+
+    if (playerScore >= highscore) {
+      highscore = playerScore;
+      console.log(`Highscore updated to ${highscore}`);
+    }
+  }
+
+  // Loop over all the highscores again and add 'highscore' class to highest score(s)
+
+  for (let i = 0; i < allHighscores.length; i++) {
+    let playerScore = Number(allHighscores[i].innerHTML);
+
+    if (playerScore == highscore) {
+      document
+        .querySelector(`#playercard--p${i + 1}`)
+        .classList.add('highscore');
+    }
   }
 }
 
@@ -143,11 +214,9 @@ let allBuildings = [
 for (let i = 1; i <= 6; i++) {
   let htmlContent = `
   
-  <div class="playercard">
+  <div class="playercard" id="playercard--p${i}">
   <h2 class="player" id="player--${i}">Player ${i}</h2>
   
-  <div class="flash-message hidden" id="flash-p${i}"></div>
-  <p>
   Current score: <span class="score" id="currentScore--player${i}"></span>
   </p>
   
@@ -165,7 +234,6 @@ for (let i = 1; i <= 6; i++) {
     .insertAdjacentHTML('beforeend', htmlContent);
 
   scoreDisplay = document.querySelector(`#currentScore--player${i}`);
-  flashMessageP1 = document.querySelector(`#flash-p${i}`);
 
   updateBuildings(i);
   // calculateTotal(i);
@@ -200,23 +268,19 @@ document.querySelector('#add-building').addEventListener('click', function () {
 
     // Update buildings list & total points
     updateBuildings(playerNumber);
-    // calculateTotal(playerNumber);
 
-    // Flash a message on the screen
-    flashMessageP1.textContent = `Buildingcolor: ${buildingColor} / Buildingvalue: ${buildingValue} / uniqueID: ${uniqueID} / player number: ${playerNumber}`;
-
-    flashMessageP1.classList.remove('hidden');
-
-    // Hide messages after 5 seconds
-    setTimeout(() => {
-      flashMessageP1.classList.add('hidden');
-    }, '5000');
+    highlightHighscore();
   }
 });
 
-// TODO: Delete a building
+// Pop-up the 'add building' screen
+document
+  .querySelector('#add-building-pop-up')
+  .addEventListener('click', function () {
+    document.querySelector('form').classList.remove('hidden');
+  });
+
 // Select all delete buttons
-// let deleteBtns = document.querySelectorAll('.delete-btn');
 
 function addDeleteButtons() {
   let deleteBtns = document.querySelectorAll('.delete-btn');
@@ -245,6 +309,7 @@ function addDeleteButtons() {
 
       if (player != 0) {
         updateBuildings(player);
+        highlightHighscore();
         deleteBtns = document.querySelectorAll('.delete-btn');
       }
     });

@@ -9,26 +9,31 @@
   </head>
   <body>
     <h1>Machiavelli scorecounter</h1>
-    <button id="add-building-pop-up">Add a building</button>
+    
+    <div class="flash-message-div hidden">
 
-    <div class="flash-message hidden"></div>
-
+      <div class="flash-message">
+        <button class="close-flash">&times;</button>
+        
+      </div>
+    </div>
+    
     <form onsubmit="return false;" class="hidden">
-
+      
       <button class="close-modal">&times;</button>
-
+      
       <div class="center">
         <h2>Add a building</h2>
       </div>
-        
+      
       <div>
         <div>
           <label for="value">Score gebouw:</label>
           <input type="number" name="value" id="building-value"/>
-      </div>
-  
-  
-      <div>
+        </div>
+        
+        
+        <div>
           <label for="building-color" id="building-color">Kleur gebouw:</label>
           <input type="radio" value="red" name="building-color">Red</input>
           <input type="radio" value="green" name="building-color">Green</input>
@@ -36,22 +41,27 @@
           <input type="radio" value="yellow" name="building-color">Yellow</input>
           <input type="radio" value="purple" name="building-color">Purple</input>
           <input type="radio" value="neutral" name="building-color">Neutral</input>
-      </div>
-  
-  
-      <div>
-        <label for="player-number" id="player-number">Toevoegen bij welke speler?</label>
-        <input type="radio" value="1" name="player-number">Speler 1</input>
-        <input type="radio" value="2" name="player-number">Speler 2</input>
-        <input type="radio" value="3" name="player-number">Speler 3</input>
-        <input type="radio" value="4" name="player-number">Speler 4</input>
-        <input type="radio" value="5" name="player-number">Speler 5</input>
-        <input type="radio" value="6" name="player-number">Speler 6</input>
-      </div>
-  
+        </div>
+        
+        
+        <div>
+          <label for="player-number" id="player-number">Toevoegen bij welke speler?</label>
+          <input type="radio" value="1" name="player-number">Speler 1</input>
+          <input type="radio" value="2" name="player-number">Speler 2</input>
+          <input type="radio" value="3" name="player-number">Speler 3</input>
+          <input type="radio" value="4" name="player-number">Speler 4</input>
+          <input type="radio" value="5" name="player-number">Speler 5</input>
+          <input type="radio" value="6" name="player-number">Speler 6</input>
+        </div>
+        
         <input type="submit" value="Gebouw toevoegen" id="add-building">
       </div>
-      </form>
+    </form>
+
+    
+    <div class="overlay hidden"></div>
+    
+    <button id="add-building-pop-up">Add a building</button>
 
     <div id="scoreboard">
 

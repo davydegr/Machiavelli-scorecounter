@@ -11,7 +11,7 @@ let score = 0;
 // Initialize the unique ID number, incrementing everytime a building is created
 let uniqueID = 1;
 
-// FUNCTIONS
+////// FUNCTIONS
 
 // Updates the buildings list with the current array
 function updateBuildings(playerNumber) {
@@ -49,7 +49,7 @@ function updateBuildings(playerNumber) {
 
   if (list.innerHTML == '') {
     const htmlContent = `
-    This player curretly has no buildings.`;
+    This player currently has no buildings.`;
 
     list.insertAdjacentHTML('beforeend', htmlContent);
   }
@@ -169,7 +169,36 @@ function highlightHighscore() {
   }
 }
 
-// MAIN PROJECT
+function closeModal() {
+  document.querySelector('form').classList.add('hidden');
+  document.querySelector('.overlay').classList.add('hidden');
+}
+
+function openModal() {
+  document.querySelector('form').classList.remove('hidden');
+  document.querySelector('.overlay').classList.remove('hidden');
+}
+
+function closeFlash() {
+  document.querySelector('.flash-message-div').classList.add('hidden');
+}
+
+function flashMessage(message) {
+  // Set the message
+  let msg = `<p>${message}</p>`;
+
+  // Select the flash messages' inner HTML and set it to msg
+  document.querySelector('.flash-message').innerHTML = msg;
+
+  // Make the flash message visible
+  document.querySelector('.flash-message-div').classList.remove('hidden');
+
+  // Close the flash message after 5 seconds
+  setTimeout(closeFlash, 5000);
+}
+
+////////// MAIN PROJECT
+
 //TODO: Delete test data, just initialize as an empty array
 
 let allBuildings = [
@@ -209,7 +238,7 @@ let allBuildings = [
   },
 ];
 
-// Initialize score & buildings
+//// Initialize score & buildings
 
 for (let i = 1; i <= 6; i++) {
   let htmlContent = `
@@ -236,13 +265,11 @@ for (let i = 1; i <= 6; i++) {
   scoreDisplay = document.querySelector(`#currentScore--player${i}`);
 
   updateBuildings(i);
-  // calculateTotal(i);
 }
 
-// Add a building and display a flash message
-
+//// Add building to buildings array
 document.querySelector('#add-building').addEventListener('click', function () {
-  // Get input fields
+  // Get value from input fields
   const buildingColor = getCheckedRadioButton();
   const buildingValue = getBuildingValue();
   const playerNumber = getCheckedPlayerNumber();
@@ -270,15 +297,30 @@ document.querySelector('#add-building').addEventListener('click', function () {
     updateBuildings(playerNumber);
 
     highlightHighscore();
+
+    closeModal();
+  } else {
+    // TODO: Display a flash message that something is not specified
   }
 });
+
+///// OPENING THE ADD BUILDING POP UP
 
 // Pop-up the 'add building' screen
 document
   .querySelector('#add-building-pop-up')
-  .addEventListener('click', function () {
-    document.querySelector('form').classList.remove('hidden');
-  });
+  .addEventListener('click', openModal);
+
+////// CLOSING THE ADD BUILDING POP UP
+
+// Close the pop-up window with the button
+document.querySelector('.close-modal').addEventListener('click', closeModal);
+
+// Close the pop up window by clicking the overlay
+document.querySelector('.overlay').addEventListener('click', closeModal);
+
+// Close the flash message
+document.querySelector('.close-flash').addEventListener('click', closeFlash);
 
 // Select all delete buttons
 
